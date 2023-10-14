@@ -58,6 +58,7 @@ type specific_operation =
   | Imulsubf      (* floating-point multiply and subtract *)
   | Inegmulsubf   (* floating-point negate, multiply and subtract *)
   | Isqrtf        (* floating-point square root *)
+  | Ipopcounti
   | Ibswap of int (* endianness conversion *)
   | Imove32       (* 32-bit integer move *)
   | Isignext of int (* sign extension *)
@@ -168,6 +169,9 @@ let print_specific_operation printreg op ppf arg =
   | Isqrtf ->
       fprintf ppf "sqrtf %a"
         printreg arg.(0)
+        | Ipopcounti -> 
+          fprintf ppf "popcounti %a"
+            printreg arg.(0) 
   | Ibswap n ->
       fprintf ppf "bswap%i %a" n
         printreg arg.(0)

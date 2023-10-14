@@ -200,8 +200,11 @@ method! select_operation op args dbg =
   (* Recognize floating-point square root *)
   | Cextcall("sqrt", _, _, _) ->
       (Ispecific Isqrtf, args)
+  | Cextcall("popcount", _, _, _) ->
+        (Ispecific Ipopcounti, args)
   (* Recognize bswap instructions *)
-  | Cextcall("caml_bswap16_direct", _, _, _) ->
+  | Cextcall("caml_bswap16_direct", _, _
+  , _) ->
       (Ispecific(Ibswap 16), args)
   | Cextcall("caml_int32_direct_bswap", _, _, _) ->
       (Ispecific(Ibswap 32), args)
