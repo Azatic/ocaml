@@ -503,6 +503,7 @@ module BR = Branch_relaxation.Make (struct
     | Lop (Iintop _) -> 1
     | Lop (Iintop_imm _) -> 1
     | Lop (Ifloatofint | Iintoffloat | Iabsf | Inegf | Ispecific Isqrtf) -> 1
+    | Lop (Ispecific Ipopcounti) -> 1
     | Lop (Iaddf | Isubf | Imulf | Idivf | Ispecific Inegmulf) -> 1
     | Lop (Iopaque) -> 0
     | Lop (Ispecific (Imuladdf | Inegmuladdf | Imulsubf | Inegmulsubf)) -> 1
@@ -672,7 +673,7 @@ let name_for_float_comparison = function
 
 (* Output the assembly code for an instruction *)
 
-let emit_instr env i =
+let emit_instr env i :unit =
     emit_debug_info i.dbg;
     match i.desc with
     | Lend -> ()
@@ -908,6 +909,15 @@ let emit_instr env i =
                      | Ispecific Isqrtf -> "fsqrt"
                      | _                -> assert false) in
         `	{emit_string instr}	{emit_reg i.res.(0)}, {emit_reg i.arg.(0)}\n`
+   | Lop( Ispecific Ipopcounti as op) ->
+        let instr = (match op with
+                     | Ifloatofint      -> "scvtf"
+                     | Iintoffloat      -> "fcvtzs"
+                     | Iabsf            -> "fabs"
+                     | Inegf            -> "fneg"
+                     | Ispecific Ipopcounti -> "cnt.8b"
+                     | _                -> assert false) in
+        `	{emit_string instr}	{emit_reg i.res.(0)}, {emit_reg i.arg.(0)}\n;   nuynydcycdrntcvt`
     | Lop(Iaddf | Isubf | Imulf | Idivf | Ispecific Inegmulf as op) ->
         let instr = (match op with
                      | Iaddf              -> "fadd"

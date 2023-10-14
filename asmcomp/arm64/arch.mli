@@ -56,6 +56,7 @@ type specific_operation =
   | Imulsubf      (* floating-point multiply and subtract *)
   | Inegmulsubf   (* floating-point negate, multiply and subtract *)
   | Isqrtf        (* floating-point square root *)
+  | Ipopcounti
   | Ibswap of int (* endianness conversion *)
   | Imove32       (* 32-bit integer move *)
   | Isignext of int (* sign extension *)
