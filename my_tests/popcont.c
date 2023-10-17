@@ -9,7 +9,9 @@ CAMLprim value popcount(value arg)
 }
 int myfunc(int n, int e, int y)
 {
-	return 1;
+    CAMLparam3(n,e,y);
+
+	CAMLreturn (Val_int((Int_val(n)) + (Int_val(e)) * 2));
 }
 
 CAMLprim value caml_check(value arg)

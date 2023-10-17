@@ -1,0 +1,202 @@
+--- riscv_vanilla.s	2023-10-22 11:19:15.756757834 +0300
++++ riscv_patched.s	2023-10-22 11:59:39.025570837 +0300
+@@ -31,12 +31,14 @@
+ 	.section .text
+ 	.align	2
+ camlA.fac_269:
++	.file	1	"a.ml"
++	.loc	1	2
+ 	.cfi_startproc
+ 	ld	t1, 40(s11)
+ 	addi	t1, t1, 328
+ 	bltu	sp, t1, .L102
+ .L103:
+-        addi    sp, sp, -16
++	addi	sp, sp, -16
+ 	.cfi_adjust_cfa_offset	16
+ 	sd	ra, 8(sp)
+ 	.cfi_offset 1, -8
+@@ -45,21 +47,27 @@
+ 	bgt	a0, a1, .L100
+ 	li	a0, 3
+ 	ld	ra, 8(sp)
+-        addi    sp, sp, 16
++	addi	sp, sp, 16
+ 	.cfi_adjust_cfa_offset	-16
+ 	ret
+ .L100:
+ 	sd	a0, 0(sp)
++	.loc	1	2
+ 	addi	a0, a0, -2
++	.loc	1	2
+ 	call	camlA.fac_269@plt
+ .L104:
++	.loc	1	2
+ 	srai	a4, a0, 1
+ 	ld	s3, 0(sp)
++	.loc	1	2
+ 	addi	a5, s3, -1
++	.loc	1	2
+ 	mul	a6, a5, a4
++	.loc	1	2
+ 	addi	a0, a6, 1
+ 	ld	ra, 8(sp)
+-        addi    sp, sp, 16
++	addi	sp, sp, 16
+ 	.cfi_adjust_cfa_offset	-16
+ 	ret
+ .L102:
+@@ -80,12 +88,12 @@
+ camlA.entry:
+ 	.cfi_startproc
+ 	ld	t1, 40(s11)
+-	addi	t1, t1, 328
++	addi	t1, t1, 320
+ 	bltu	sp, t1, .L106
+ .L107:
+-        addi    sp, sp, -16
+-	.cfi_adjust_cfa_offset	16
+-	sd	ra, 8(sp)
++	addi	sp, sp, -8
++	.cfi_adjust_cfa_offset	8
++	sd	ra, 0(sp)
+ 	.cfi_offset 1, -8
+ .L105:
+ 	la	a1, camlA.1
+@@ -97,26 +105,30 @@
+ 	call	caml_initialize@plt
+ 	mv	sp, s0
+ 	.cfi_restore_state
+-	li	a2, 3
+-	li	a1, 3
+-	li	a0, 1
+-	la	t2, myfunc
+-	call	caml_c_call@plt
+-.L108:
++	li	a2, 11
++	li	a3, 1
++	.loc	1	6
++   srli a2, a2, 1
++   srli a3, a3, 1
++   th.addsl a0, a3, a2, 0
++	.file	2	"stdlib.ml"
++	.loc	2	489
+ 	call	camlStdlib.string_of_int_175@plt
+-.L109:
+-	mv      a1, a0
+-	la	a7, camlStdlib
+-	ld	a0, 304(a7)
++.L108:
++	mv	a1, a0
++	la	a6, camlStdlib
++	.loc	1	6
++	ld	a0, 304(a6)
++	.loc	2	489
+ 	call	camlStdlib.output_string_253@plt
+-.L110:
++.L109:
+ 	li	a0, 1
+-	ld	ra, 8(sp)
+-        addi    sp, sp, 16
+-	.cfi_adjust_cfa_offset	-16
++	ld	ra, 0(sp)
++	addi	sp, sp, 8
++	.cfi_adjust_cfa_offset	-8
+ 	ret
+ .L106:
+-	li	t1, 34
++	li	t1, 33
+ 	addi	sp, sp, -16
+ 	sd	t1, 0(sp)
+ 	sd	ra, 8(sp)
+@@ -143,63 +155,57 @@
+ 	.globl	camlA.frametable
+ 	.type	camlA.frametable, @object
+ camlA.frametable:
+-	.quad	4
+-	.quad	.L110
+-	.short	17
+-	.short	0
+-	.align	2
+-	.long	(.L111 - .) + 0x0
+-	.align	3
++	.quad	3
+ 	.quad	.L109
+-	.short	17
++	.short	9
+ 	.short	0
+ 	.align	2
+-	.long	(.L112 - .) + 0x0
++	.long	(.L110 - .) + 0x0
+ 	.align	3
+ 	.quad	.L108
+-	.short	17
++	.short	9
+ 	.short	0
+ 	.align	2
+-	.long	(.L113 - .) + 0x0
++	.long	(.L111 - .) + 0x0
+ 	.align	3
+ 	.quad	.L104
+ 	.short	17
+ 	.short	1
+ 	.short	0
+ 	.align	2
+-	.long	(.L114 - .) + 0x0
++	.long	(.L112 - .) + 0x0
+ 	.align	3
+ 	.align	2
+-.L112:
+-	.long	(.L116 - .) + 0xe0000000
+-	.long	0x1e9270
+-	.align	2
+ .L111:
+-	.long	(.L116 - .) + 0xe0000000
+-	.long	0x1e9120
++	.long	(.L114 - .) + 0x1
++	.long	0xf489dc0
++	.long	(.L116 - .) + 0x0
++	.long	0x3000e0
+ 	.align	2
+-.L113:
+-	.long	(.L118 - .) + 0x94000000
+-	.long	0x6130
++.L110:
++	.long	(.L114 - .) + 0x1
++	.long	0xf4849c0
++	.long	(.L116 - .) + 0x0
++	.long	0x3000e0
+ 	.align	2
+-.L114:
+-	.long	(.L119 - .) + 0xc4000000
+-	.long	0x1290
+-.L115:
++.L112:
++	.long	(.L117 - .) + 0x0
++	.long	0x10a588
++.L113:
+ 	.byte	115,116,100,108,105,98,46,109,108,0
+-.L117:
++.L115:
+ 	.byte	97,46,109,108,0
+ 	.align	2
+-.L118:
+-	.long	(.L117 - .) + 0x0
+-	.byte	65,0
++.L114:
++	.long	(.L113 - .) + 0x0
++	.byte	83,116,100,108,105,98,46,112,114,105,110,116,95,105,110,116
++	.byte	0
+ 	.align	2
+-.L119:
+-	.long	(.L117 - .) + 0x0
++.L117:
++	.long	(.L115 - .) + 0x0
+ 	.byte	65,46,102,97,99,0
+ 	.align	2
+ .L116:
+ 	.long	(.L115 - .) + 0x0
+-	.byte	83,116,100,108,105,98,46,112,114,105,110,116,95,105,110,116
+-	.byte	0
++	.byte	65,0
+ 	.align	3
