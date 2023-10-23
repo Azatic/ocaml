@@ -256,7 +256,9 @@ let name_for_specific = function
   | Imultsubf false -> "fmsub.d"
   | Imultsubf true  -> "fnmsub.d"
   | Imyfunci _ -> "th.addsl"
-(* Output the assembly code for an instruction *)
+  | Iup_myfunci ((Imyfunci _),_)  -> "th.addsl"
+  | Iup_myfunci _ -> Misc.fatal_error "Emit. bad matching"
+  (* Output the assembly code for an instruction *)
 
 let emit_instr env i =
   emit_debug_info i.dbg;

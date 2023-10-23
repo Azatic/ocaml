@@ -17,7 +17,6 @@
 (**************************************************************************)
 
 (* Specific operations for the ARM processor, 64-bit mode *)
-
 open Format
 
 let macosx = (Config.system = "macosx")

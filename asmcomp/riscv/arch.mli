@@ -26,6 +26,7 @@ type specific_operation =
   | Imultaddf of bool        (* multiply, optionally negate, and add *)
   | Imultsubf of bool        (* multiply, optionally negate, and subtract *)
   | Imyfunci of int
+  | Iup_myfunci of specific_operation*int
 (* Addressing modes *)
 
 type addressing_mode =

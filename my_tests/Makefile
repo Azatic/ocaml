@@ -31,11 +31,11 @@ riscv_diff:
 	cp a.s riscv_patched.s
 #	diff -u riscv_vanilla.s riscv_patched.s  > diff
 
-comp:
-	gcc -c popcont.c -I `ocamlc -where`
-	ocamlopt popcont.o a.cmx -o hello1.exe
-	./hello1.exe
-
+comp_intrinsic:
+	../boot/ocamlrun ../ocamlopt -g -I ../stdlib -ccopt -I../runtime popcont.c     test.ml -o test_intrinsic.exe
+	
+comp_native:
+	ocamlopt popcont.c test.ml -o test_native.exe
 configure:
 	AS="as -misa-spec=20191213 -march=rv64imafdc_zicsr_zifencei_xtheadba"  CC=gcc-13 \
 		./configure  --disable-ocamldoc  --disable-unix-lib --disable-ocamltest --disable-str-lib --disable-systhreads --disable-debug-runtime
