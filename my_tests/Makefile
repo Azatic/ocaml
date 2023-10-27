@@ -41,5 +41,7 @@ configure:
 		./configure  --disable-ocamldoc  --disable-unix-lib --disable-ocamltest --disable-str-lib --disable-systhreads --disable-debug-runtime
 
 risc_s:
-	../boot/ocamlrun ../ocamlopt -g -I ../stdlib -S -c a.ml
-	cp a.s risc_s.s
+	../boot/ocamlrun ../ocamlopt -g -I ../stdlib -ccopt -I../runtime popcont.c     up.ml -o popcontUP.exe
+	../boot/ocamlrun ../ocamlopt -g -I ../stdlib -S -c up.ml
+	cp a.s riscv_patchedUP.s
+

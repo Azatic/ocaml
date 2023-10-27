@@ -23,6 +23,7 @@ open Mach
 open Linear
 open Emitaux
 open Emitenv
+[@@@ocaml.warnerror "-27"]
 
 (* Layout of the stack.  The C stack must be 16-aligned, but 8-alignment
    is enough for the OCaml stack. *)
@@ -497,6 +498,8 @@ let emit_instr env i =
       assert (i.arg.(0).loc = i.res.(0).loc)
   | Lop(Ispecific (Imyfunci n)) ->
         `   srli {emit_reg i.arg.(1)}, {emit_reg i.arg.(1)}, 1\n   srli {emit_reg i.arg.(0)}, {emit_reg i.arg.(0)}, 1\n   th.addsl {emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_reg i.arg.(1)}, {emit_string(string_of_int (n/2))}\n   li {emit_reg i.arg.(0)}, 1\n   th.addsl {emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_reg i.res.(0)}, 1\n`
+  | Lop(Ispecific (Iup_myfunci ((Imyfunci n),arg3))) -> 
+        `   th.addsl {emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_reg i.arg.(1)}, {emit_string(string_of_int (n/2))}\n   li {emit_reg i.arg.(0)}, 1\n   th.addsl {emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_reg i.res.(0)}, 1\n`
   | Lop(Ispecific sop) ->
       let instr = name_for_specific sop in
       `	{emit_string instr}	{emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_reg i.arg.(1)}, {emit_reg i.arg.(2)}\n`

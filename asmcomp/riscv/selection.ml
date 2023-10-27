@@ -44,10 +44,13 @@ method select_addressing _ = function
       (Iindexed n, Cop(Caddi, [arg1; arg2], dbg))
   | arg ->
       (Iindexed 0, arg)
-
+      [@@@ocaml.warnerror "-27"]
 method! select_operation op args dbg =
   match (op, args) with
   (* Recognize (neg-)mult-add and (neg-)mult-sub instructions *)
+  | (Cadda, [Cop(Cextcall ("myfunc",_,_,_), [arg1;arg2;Cconst_int (n,_)], _); arg3 ]) ->   ((Ispecific (Imyfunci n)), ([arg1;arg2]))
+
+                  (*((Ispecific (Iup_myfunci (((Ispecific (Imyfunci n)), ([arg1;arg2])), ([arg3])))))*)
   | (Caddf, [Cop(Cmulf, [arg1; arg2], _); arg3])
   | (Caddf, [arg3; Cop(Cmulf, [arg1; arg2], _)]) ->
       (Ispecific (Imultaddf false), [arg1; arg2; arg3])
@@ -60,10 +63,11 @@ method! select_operation op args dbg =
   | (Cstore (Word_int | Word_val as memory_chunk, Assignment), [arg1; arg2]) ->
       (* Use trivial addressing mode for non-initializing stores *)
       (Istore (memory_chunk, Iindexed 0, true), [arg2; arg1])
-
+  (*| (Cextcall ("myfunc", [Addr],(arg1) ,_) *)
   | (Cextcall ("myfunc",_,_,_), [arg1;arg2;Cconst_int (n,_)]) -> 
                   ((Ispecific (Imyfunci n)),
   ([arg1;arg2]))
+   
   | _ ->
       super#select_operation op args dbg
               
