@@ -324,12 +324,13 @@ method is_simple_expr = function
   | Cop(op, args, _) ->
       begin match op with
         (* The following may have side effects *)
-      | Capply _ | Cextcall _ | Calloc | Cstore _ | Craise _ | Copaque -> false
+     (* | Cextcall ("myfunc",_,_,_) ->  List.for_all self#is_simple_expr args*)
+      | Capply _  | Calloc | Cstore _ | Craise _ | Copaque | Cextcall _ -> false
         (* The remaining operations are simple if their args are *)
       | Cload _ | Caddi | Csubi | Cmuli | Cmulhi | Cdivi | Cmodi | Cand | Cor
       | Cxor | Clsl | Clsr | Casr | Ccmpi _ | Caddv | Cadda | Ccmpa _ | Cnegf
       | Cabsf | Caddf | Csubf | Cmulf | Cdivf | Cfloatofint | Cintoffloat
-      | Ccmpf _ | Ccheckbound | Cdls_get ->
+      | Ccmpf _ | Ccheckbound | Cdls_get  ->
           List.for_all self#is_simple_expr args
       end
   | Cassign _ | Cifthenelse _ | Cswitch _ | Ccatch _ | Cexit _
@@ -364,7 +365,7 @@ method effects_of exp =
   | Cop (op, args, _) ->
     let from_op =
       match op with
-      | Capply _ | Cextcall _ | Copaque -> EC.arbitrary
+      | Capply _ | Copaque | Cextcall _ -> EC.arbitrary
       | Calloc -> EC.none
       | Cstore _ -> EC.effect_only Effect.Arbitrary
       | Craise _ | Ccheckbound -> EC.effect_only Effect.Raise
@@ -373,7 +374,9 @@ method effects_of exp =
           EC.coeffect_only Coeffect.Read_mutable
       | Caddi | Csubi | Cmuli | Cmulhi | Cdivi | Cmodi | Cand | Cor | Cxor
       | Clsl | Clsr | Casr | Ccmpi _ | Caddv | Cadda | Ccmpa _ | Cnegf | Cabsf
-      | Caddf | Csubf | Cmulf | Cdivf | Cfloatofint | Cintoffloat | Ccmpf _ ->
+      | Caddf | Csubf | Cmulf | Cdivf | Cfloatofint | Cintoffloat | Ccmpf _ 
+(* | Cextcall _ *)
+ ->
         EC.none
     in
     EC.join from_op (EC.join_list_map args self#effects_of)

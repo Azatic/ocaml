@@ -25,7 +25,9 @@ val command_line_options : (string * Arg.spec * string) list
 type specific_operation =
   | Imultaddf of bool        (* multiply, optionally negate, and add *)
   | Imultsubf of bool        (* multiply, optionally negate, and subtract *)
-  | Imyfunci of int
+ | Imyfunci of int
+  | Ifuncaddf of specific_operation
+  | Ipopcounti
 (* Addressing modes *)
 
 type addressing_mode =

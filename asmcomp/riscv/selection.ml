@@ -46,8 +46,11 @@ method select_addressing _ = function
       (Iindexed 0, arg)
 
 method! select_operation op args dbg =
+(*  Format.printf "@[%a@]\n%!"        Printcmm.expression (Cop (op, args, dbg));*)
   match (op, args) with
-  (* Recognize (neg-)mult-add and (neg-)mult-sub instructions *)
+(*  | (Caddi, [Cop(Cextcall ("myfunc",_,_,_), [arg1;arg2;Cconst_int (n,_)], _ ); arg3]) when n>0 && n<4->
+        (* Printf.eprintf "%s %d\n" __FILE__ __LINE__;*)
+         (Ispecific (Ifuncaddf (Imyfunci n)), [arg1;arg2;arg3]) *)
   | (Caddf, [Cop(Cmulf, [arg1; arg2], _); arg3])
   | (Caddf, [arg3; Cop(Cmulf, [arg1; arg2], _)]) ->
       (Ispecific (Imultaddf false), [arg1; arg2; arg3])
@@ -60,10 +63,12 @@ method! select_operation op args dbg =
   | (Cstore (Word_int | Word_val as memory_chunk, Assignment), [arg1; arg2]) ->
       (* Use trivial addressing mode for non-initializing stores *)
       (Istore (memory_chunk, Iindexed 0, true), [arg2; arg1])
-
-  | (Cextcall ("myfunc",_,_,_), [arg1;arg2;Cconst_int (n,_)]) -> 
-                  ((Ispecific (Imyfunci n)),
-  ([arg1;arg2]))
+  | (Cextcall ("myfunc",_,_,_), [arg1;arg2;Cconst_int (n,_)]) when n > 2 && n < 8 -> 
+                  ((Ispecific (Imyfunci (n/2))),
+  ([arg1;arg2])) 
+  | (Cextcall ("popcount",_,_,_), [arg1]) -> 
+    ((Ispecific Ipopcounti ),
+                    ([arg1])) 
   | _ ->
       super#select_operation op args dbg
               

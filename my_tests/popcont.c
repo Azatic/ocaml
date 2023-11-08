@@ -5,13 +5,13 @@ CAMLprim value popcount(value arg)
 {
 	CAMLparam1(arg);
 
-	CAMLreturn(Val_int(__builtin_popcount(Int_val(arg))));
+	CAMLreturn(Val_int(0));
 }
 int myfunc(int n, int e, int y)
 {
     CAMLparam3(n,e,y);
 
-	CAMLreturn (Val_int((Int_val(n)) + (Int_val(e)) * 2));
+	CAMLreturn (Val_int(0));
 }
 
 CAMLprim value caml_check(value arg)

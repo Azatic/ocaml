@@ -5,7 +5,10 @@ all:
 	ocamlopt popcont.o a.cmx -o hello1.exe
 	./hello1.exe
 clean:
-	$(RM) *.cm[iox] *.s *.annot *.o *.out ./diff popcont *.S
+	$(RM) *.cm[iox] *.s *.annot *.o *.out ./diff popcont *.S *.exe
+
+dcmm:
+	../boot/ocamlrun ../ocamlopt -I ../stdlib -dcmm a.ml
 
 diff:
 	OPAMSWITCH=5.2.0+trunk opam exec -- ocamlopt -annot -S -c  a.ml 
@@ -27,13 +30,11 @@ riscv_diff:
 #	mv a.s riscv_vanilla.s
 #	diff -u riscv_vanilla.s riscv_patched.s
 
-#comp:
+comp:
 #	gcc -c popcont.c -I `ocamlc -where`
 #	ocamlopt popcont.o a.cmx -o hello1.exe
-#	./hello1.exe
-	
-
-	../boot/ocamlrun ../ocamlopt -g -I ../stdlib -ccopt -I../runtime popcont.c a.ml -o popcont.exe
+#	./hello1.exe	
+	../boot/ocamlrun ../ocamlopt -g -I ../stdlib -S -ccopt -I../runtime popcont.c a.ml -o popcont.exe
 	../boot/ocamlrun ../ocamlopt -g -I ../stdlib -S -c a.ml
 	cp a.s riscv_patched.s
 #	diff -u riscv_vanilla.s riscv_patched.s  > diff
@@ -60,8 +61,10 @@ riscv_diff:
 
 configure:
 	AS="as -misa-spec=20191213 -march=rv64imafdc_zicsr_zifencei_xtheadba"  CC=gcc-13 \
-		./configure  --disable-ocamldoc  --disable-unix-lib --disable-ocamltest --disable-str-lib --disable-systhreads --disable-debug-runtime
+		./configure  --disable-ocamldoc  --disable-unix-lib --disable-ocamltest --disable-str-lib --disable-systhreads --disable-debug-runtime -C ..
 
 risc_s:
 	../boot/ocamlrun ../ocamlopt -g -I ../stdlib -S -c a.ml
 	cp a.s risc_s.s
+assem:
+	ocamlopt -S a.ml 

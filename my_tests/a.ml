@@ -1,18 +1,14 @@
-let rec fac n = if n <=1 then 1 else n * fac(n-1)
-
-external popcount : int->int->int -> int = "myfunc"
-(*external check: string -> int = "caml_check"
-external c_fac: int -> int = "caml_fac" *)
-
-let () = print_int (popcount 3 2 1)
-(*
-let () =  
-	 (* print_int(fac 5);
-    print_int(check "hello");
-	print_newline(); *) 
-	Printf.printf "%d\n" (popcount 3 2 1);
-(*	 print_newline(); 
-	print_int(c_fac 5);
-    print_float(sqrt 4.); *)
+(*let rec fac n = if n <=1 then 1 else n * fac(n-1)
 *)
+(*open Int
+let () = print_int 
+(*external popcount : int->int->int -> int = "myfunc"*)
+let f x y =
+        x + y * 8
 
+let g x y d = x + y * 4 + d*)
+external myfunc : int->int->int -> int = "myfunc"
+external popcount : int -> int = "popcount"
+let () = print_int (myfunc 3 2 3)
+let () = print_string " popcount 5 = "
+let () = print_int (popcount 5)
