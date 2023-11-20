@@ -1,8 +1,0 @@
-(*let rec fac n = if n <=1 then 1 else n * fac(n-1)
-*)
-
-(*external popcount : int->int->int -> int = "myfunc"*)
-let f x y =
-        x + y * 8
-
-let g x y d = x + y * 4 + d

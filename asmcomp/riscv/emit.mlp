@@ -257,8 +257,8 @@ let name_for_specific = function
   | Imultaddf true  -> "fnmadd.d"
   | Imultsubf false -> "fmsub.d"
   | Imultsubf true  -> "fnmsub.d"
-  | Ifuncaddf _ | Ipopcounti  -> "somethink"
- | Imyfunci _ -> "th.addsl"
+  | Ipopcounti  -> "somethink"
+  | Imyfunci _ -> "th.addsl"
 (* Output the assembly code for an instruction *)
 
 let emit_instr env i =
@@ -497,13 +497,11 @@ let emit_instr env i =
       `	fcvt.l.d	{emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, rtz\n`
   | Lop(Iopaque) ->
       assert (i.arg.(0).loc = i.res.(0).loc)
-  | Lop(Ispecific (Ifuncaddf (Imyfunci n))) ->
-        `   srli {emit_reg i.arg.(0)}, {emit_reg i.arg.(0)}, 1\n   srli {emit_reg i.arg.(1)}, {emit_reg i.arg.(1)}, 1\n   th.addsl {emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_reg i.arg.(1)}, {emit_string(string_of_int (n/2))}\n   th.addsl {emit_reg i.res.(0)}, {emit_reg i.arg.(2)}, {emit_reg i.res.(0)}, 1\n`
-
   | Lop(Ispecific (Imyfunci n)) ->
-        `   addi {emit_reg i.arg.(1)} ,{emit_reg i.arg.(1)}, (-1)\n   th.addsl {emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_reg i.arg.(1)}, {emit_string(string_of_int n)}\n`
-(*  | Lop(Ispecific Ipopcounti) ->
-                  ` cpop {emit_reg i.res.(0)}, {emit_reg i.arg.(0)}\n    th.addsl d , -1 , d, 1      `*)
+        `   addi {emit_reg i.arg.(1)} ,{emit_reg i.arg.(1)}, (-1)\n`;
+        `   th.addsl {emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_reg i.arg.(1)}, {emit_string(string_of_int n)}\n`;
+  | Lop(Ispecific Ipopcounti) ->
+                  ` cpop {emit_reg i.res.(0)}, {emit_reg i.arg.(0)}\n`
         | Lop(Ispecific sop) ->
       let instr = name_for_specific sop in
       `	{emit_string instr}	{emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_reg i.arg.(1)}, {emit_reg i.arg.(2)}\n`

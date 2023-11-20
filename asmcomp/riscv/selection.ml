@@ -19,8 +19,14 @@
 open Cmm
 open Arch
 open Mach
+(*open Proc*)
 
 (* Instruction selection *)
+let operation_supported op = 
+  let conf = "thead" in
+  match conf, op with
+  | "thead", "myfunc" -> true
+  | _, _ -> false
 
 class selector = object
 
@@ -45,12 +51,12 @@ method select_addressing _ = function
   | arg ->
       (Iindexed 0, arg)
 
+
+
 method! select_operation op args dbg =
-(*  Format.printf "@[%a@]\n%!"        Printcmm.expression (Cop (op, args, dbg));*)
   match (op, args) with
-(*  | (Caddi, [Cop(Cextcall ("myfunc",_,_,_), [arg1;arg2;Cconst_int (n,_)], _ ); arg3]) when n>0 && n<4->
-        (* Printf.eprintf "%s %d\n" __FILE__ __LINE__;*)
-         (Ispecific (Ifuncaddf (Imyfunci n)), [arg1;arg2;arg3]) *)
+  | (Caddi, [Cop(Cextcall ("lslint",_,_,_), [arg2;Cconst_int (n,_)], _ ); arg1]) when n>0 && n<4->
+         (Ispecific (Imyfunci n), [arg1;arg2])
   | (Caddf, [Cop(Cmulf, [arg1; arg2], _); arg3])
   | (Caddf, [arg3; Cop(Cmulf, [arg1; arg2], _)]) ->
       (Ispecific (Imultaddf false), [arg1; arg2; arg3])
@@ -64,8 +70,11 @@ method! select_operation op args dbg =
       (* Use trivial addressing mode for non-initializing stores *)
       (Istore (memory_chunk, Iindexed 0, true), [arg2; arg1])
   | (Cextcall ("myfunc",_,_,_), [arg1;arg2;Cconst_int (n,_)]) when n > 2 && n < 8 -> 
-                  ((Ispecific (Imyfunci (n/2))),
+     begin match (operation_supported "myfunc") with
+          | true ->       ((Ispecific (Imyfunci (n/2))),
   ([arg1;arg2])) 
+  | false -> super#select_operation op args dbg
+        end
   | (Cextcall ("popcount",_,_,_), [arg1]) -> 
     ((Ispecific Ipopcounti ),
                     ([arg1])) 

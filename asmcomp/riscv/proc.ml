@@ -15,7 +15,7 @@
 (**************************************************************************)
 
 (* Description of the RISC-V *)
-
+  [@@@ocaml.warnerror "-32"]
 open Misc
 open Cmm
 open Reg
@@ -320,3 +320,9 @@ let assemble_file infile outfile =
     (Config.asm ^ " -o " ^ Filename.quote outfile ^ " " ^ Filename.quote infile)
 
 let init () = ()
+
+let operation_supported op = 
+  let conf = "zbb" in
+  match conf, op with
+  | "thead", "myfunc" -> true
+  | _, _ -> false

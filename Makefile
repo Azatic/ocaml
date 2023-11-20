@@ -293,6 +293,9 @@ opt: checknative
 	$(MAKE) otherlibrariesopt ocamltoolsopt
 
 # Native-code versions of the tools
+
+
+
 .PHONY: opt.opt
 opt.opt: checknative
 	$(MAKE) checkstack
@@ -373,6 +376,11 @@ world: coldstart
 .PHONY: world.opt
 world.opt: checknative
 	$(MAKE) coldstart
+	$(MAKE) opt.opt
+
+.PHONY: my.world.opt
+my.world.opt: checknative
+#	$(MAKE) coldstart
 	$(MAKE) opt.opt
 
 # FlexDLL sources missing error messages
