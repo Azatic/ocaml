@@ -23,10 +23,12 @@ open Mach
 
 (* Instruction selection *)
 let operation_supported op = 
-  let conf = "thead" in
-  match conf, op with
-  | "thead", "myfunc" -> true
-  | _, _ -> false
+  let zbb = Arch.zbb_support in
+  let thead = Arch.thead_support in
+  match !thead, !zbb, op with
+  | true, _ ,  "myfunc" -> true
+  | _ , true , "popcount" -> true
+  | _, _, _ -> false
 
 class selector = object
 
@@ -55,9 +57,17 @@ method select_addressing _ = function
 
 method! select_operation op args dbg =
   match (op, args) with
-  | (Caddi, [Cop(Cextcall ("lslint",_,_,_), [arg2;Cconst_int (n,_)], _ ); arg1]) when n>0 && n<4->
+  | (Caddi, [Cop(Cextcall ("caml_int64_shift_left",_,_,_), [arg2;Cconst_int (n,_)], _ ); arg1]) when n>0 && n<4->
          (Ispecific (Imyfunci n), [arg1;arg2])
-  | (Caddf, [Cop(Cmulf, [arg1; arg2], _); arg3])
+   | (Caddi,
+ [Cop(Clsl, 
+ [(Cop(Caddi,[arg2; Cconst_int ((-1),_)],_));
+ (Cop(Clsr,[Cconst_int (n,_); Cconst_int(1,_)], _ ))], _ );
+ arg1])
+    ->
+          ((Ispecific (Imyfunci n)),
+  ([arg1;arg2]))
+          | (Caddf, [Cop(Cmulf, [arg1; arg2], _); arg3])
   | (Caddf, [arg3; Cop(Cmulf, [arg1; arg2], _)]) ->
       (Ispecific (Imultaddf false), [arg1; arg2; arg3])
   | (Csubf, [Cop(Cmulf, [arg1; arg2], _); arg3]) ->
@@ -75,9 +85,15 @@ method! select_operation op args dbg =
   ([arg1;arg2])) 
   | false -> super#select_operation op args dbg
         end
-  | (Cextcall ("popcount",_,_,_), [arg1]) -> 
-    ((Ispecific Ipopcounti ),
+  | (Cextcall ("popcount",_,_,_), [arg1]) ->
+                 begin match (operation_supported "popcount"), !thead_support with
+        | true , false -> 
+    ((Ispecific (Ipopcounti false)),
                     ([arg1])) 
+        | true , true ->  ((Ispecific (Ipopcounti true)),
+                      ([arg1]))
+        | false , _ -> super#select_operation op args dbg
+                 end
   | _ ->
       super#select_operation op args dbg
               

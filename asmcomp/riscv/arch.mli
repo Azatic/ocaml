@@ -19,14 +19,15 @@
 (* Machine-specific command-line options *)
 
 val command_line_options : (string * Arg.spec * string) list
-
+val zbb_support : bool ref
+val thead_support: bool ref
 (* Specific operations *)
 
 type specific_operation =
   | Imultaddf of bool        (* multiply, optionally negate, and add *)
   | Imultsubf of bool        (* multiply, optionally negate, and subtract *)
   | Imyfunci of int
-  | Ipopcounti
+  | Ipopcounti of bool
 (* Addressing modes *)
 
 type addressing_mode =
