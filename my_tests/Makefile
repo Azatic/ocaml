@@ -31,3 +31,10 @@ comp:
 	gcc -c popcont.c -I `ocamlc -where`
 	ocamlopt popcont.o a.cmx -o hello1.exe
 	./hello1.exe
+norm_comp:
+	../boot/ocamlrun ../ocamlopt -zbb -thead -I ../stdlib -ccopt -I../runtime popcont.c a.ml -o popcont.exe -verbose
+	../boot/ocamlrun ../ocamlopt -I ../stdlib -zbb -thead -S -c a.ml
+	mv a.s riscv_patched.s
+configure:
+	AS="as -misa-spec=20191213 -march=rv64imafdc_zicsr_zifencei_xtheadba"  CC=gcc-13 \
+		../configure  --disable-ocamldoc  --disable-unix-lib --disable-ocamltest --disable-str-lib --disable-systhreads --disable-debug-runtime
