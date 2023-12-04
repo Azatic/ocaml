@@ -380,7 +380,7 @@ world.opt: checknative
 
 .PHONY: my.world.opt
 my.world.opt: checknative
-#	$(MAKE) coldstart
+	$(MAKE) coldstart
 	$(MAKE) opt.opt
 
 # FlexDLL sources missing error messages

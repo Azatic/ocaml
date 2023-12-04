@@ -62,7 +62,7 @@ method! select_operation op args dbg =
    | (Caddi,
  [Cop(Clsl, 
  [(Cop(Caddi,[arg2; Cconst_int ((-1),_)],_));
- (Cop(Clsr,[Cconst_int (n,_); Cconst_int(1,_)], _ ))], _ );
+ (Cop(Casr,[Cconst_int (n,_); Cconst_int(1,_)], _ ))], _ );
  arg1])
     ->
           ((Ispecific (Imyfunci n)),
