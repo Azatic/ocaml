@@ -23,9 +23,9 @@ open Format
 let zbb_support = ref false
 let thead_support = ref false
 let command_line_options = ["-zbb", Arg.Set zbb_support, "Generate assembly code with zbb extention";
-"-nozbb", Arg.Clear zbb_support, "Generate assembly code with zbb extention";
-"-thead", Arg.Set thead_support, "Generate assembly code with zbb extention";
-  "-nothead", Arg.Clear thead_support, "Generate assembly code with zbb extention"]
+"-nozbb", Arg.Clear zbb_support, "Generate assembly code without zbb extention";
+"-thead", Arg.Set thead_support, "Generate assembly code with thead extention";
+  "-nothead", Arg.Clear thead_support, "Generate assembly code without thead extention"]
 (* Specific operations *)
 
 type specific_operation =
@@ -90,10 +90,9 @@ let print_specific_operation printreg op ppf arg =
   | Imultsubf true ->
       fprintf ppf "-f (%a *f %a -f %a)"
         printreg arg.(0) printreg arg.(1) printreg arg.(2)
-        
- | Imyfunci n -> fprintf ppf "%a +f (%a *f (2 **f n%d))"
+  | Imyfunci n -> fprintf ppf "%a +f (%a *f (2 **f n%d))"
         printreg arg.(0) printreg arg.(1) n 
-        | Ipopcounti t -> 
+  | Ipopcounti t -> 
           fprintf ppf "popcounti %a"
             printreg arg.(0) 
       

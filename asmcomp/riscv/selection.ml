@@ -57,7 +57,7 @@ method select_addressing _ = function
 
 method! select_operation op args dbg =
   match (op, args) with
-  | (Caddi, [Cop(Cextcall ("caml_int64_shift_left",_,_,_), [arg2;Cconst_int (n,_)], _ ); arg1]) when n>0 && n<4->
+(*  | (Caddi, [Cop(Cextcall ("caml_int64_shift_left",_,_,_), [arg2;Cconst_int (n,_)], _ ); arg1]) when n>0 && n<4->
          (Ispecific (Imyfunci n), [arg1;arg2])
    | (Caddi,
  [Cop(Clsl, 
@@ -66,8 +66,8 @@ method! select_operation op args dbg =
  arg1])
     ->
           ((Ispecific (Imyfunci n)),
-  ([arg1;arg2]))
-          | (Caddf, [Cop(Cmulf, [arg1; arg2], _); arg3])
+  ([arg1;arg2])) *)
+  | (Caddf, [Cop(Cmulf, [arg1; arg2], _); arg3])
   | (Caddf, [arg3; Cop(Cmulf, [arg1; arg2], _)]) ->
       (Ispecific (Imultaddf false), [arg1; arg2; arg3])
   | (Csubf, [Cop(Cmulf, [arg1; arg2], _); arg3]) ->
