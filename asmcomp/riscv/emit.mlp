@@ -257,8 +257,8 @@ let name_for_specific = function
   | Imultaddf true  -> "fnmadd.d"
   | Imultsubf false -> "fmsub.d"
   | Imultsubf true  -> "fnmsub.d"
-  | Ipopcounti _  -> "somethink"
-  | Imyfunci _ -> "th.addsl"
+  | Ipopcounti _  -> "popcnt"
+  | Ishiftaddi _ -> "th.addsl"
 (* Output the assembly code for an instruction *)
 
 let emit_instr env i =
@@ -497,21 +497,21 @@ let emit_instr env i =
       `	fcvt.l.d	{emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, rtz\n`
   | Lop(Iopaque) ->
       assert (i.arg.(0).loc = i.res.(0).loc)
-  | Lop(Ispecific (Imyfunci n)) ->
-        `   addi {emit_reg i.arg.(1)} ,{emit_reg i.arg.(1)}, (-1)\n`;
-        `   th.addsl {emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_reg i.arg.(1)}, {emit_string(string_of_int n)}\n`;
+  | Lop(Ispecific (Ishiftaddi n)) ->
+        ` addi {emit_reg i.arg.(1)} ,{emit_reg i.arg.(1)}, -1\n`;
+        ` th.addsl {emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_reg i.arg.(1)}, {emit_string(string_of_int n)}\n`;
   | Lop(Ispecific Ipopcounti t) ->
-               begin match t with 
+      begin match t with 
                | true -> 
                   ` cpop {emit_reg i.res.(0)}, {emit_reg i.arg.(0)}\n`;
-                  ` li {emit_reg reg_tmp}, (-1)\n`;
+                  ` li {emit_reg reg_tmp}, -1\n`;
                   ` th.addsl {emit_reg i.res.(0)}, {emit_reg reg_tmp}, {emit_reg i.res.(0)}, 1\n`;
                | false -> 
                   ` cpop {emit_reg i.res.(0)}, {emit_reg i.arg.(0)}\n`;
-                  `   srli {emit_reg i.res.(0)}, {emit_reg i.res.(0)}, 1\n`;
-                   ` addi {emit_reg i.res.(0)} , {emit_reg i.res.(0)}, (-1)\n`;
-               end
-        | Lop(Ispecific sop) ->
+                  ` srli {emit_reg i.res.(0)}, {emit_reg i.res.(0)}, 1\n`;
+                  ` addi {emit_reg i.res.(0)} , {emit_reg i.res.(0)}, -1\n`;
+     end
+  | Lop(Ispecific sop) ->
       let instr = name_for_specific sop in
       `	{emit_string instr}	{emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_reg i.arg.(1)}, {emit_reg i.arg.(2)}\n`
   | Lop (Idls_get) ->

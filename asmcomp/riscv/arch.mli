@@ -26,7 +26,7 @@ val thead_support: bool ref
 type specific_operation =
   | Imultaddf of bool        (* multiply, optionally negate, and add *)
   | Imultsubf of bool        (* multiply, optionally negate, and subtract *)
-  | Imyfunci of int
+  | Ishiftaddi of int
   | Ipopcounti of bool
 (* Addressing modes *)
 
