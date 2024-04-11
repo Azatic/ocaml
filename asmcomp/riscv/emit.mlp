@@ -259,6 +259,7 @@ let name_for_specific = function
   | Imultsubf true  -> "fnmsub.d"
   | Ipopcounti _  -> "popcnt"
   | Ishiftaddi _ -> "th.addsl"
+  | Ivec_add -> "add"
 (* Output the assembly code for an instruction *)
 
 let emit_instr env i =
@@ -511,6 +512,10 @@ let emit_instr env i =
                   ` srli {emit_reg i.res.(0)}, {emit_reg i.res.(0)}, 1\n`;
                   ` addi {emit_reg i.res.(0)} , {emit_reg i.res.(0)}, -1\n`;
      end
+
+  | Lop(Ispecific Ivec_add) ->
+   let instr = "add" in
+   `	{emit_string instr}	{emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_reg i.arg.(0)}\n`
   | Lop(Ispecific sop) ->
       let instr = name_for_specific sop in
       `	{emit_string instr}	{emit_reg i.res.(0)}, {emit_reg i.arg.(0)}, {emit_reg i.arg.(1)}, {emit_reg i.arg.(2)}\n`

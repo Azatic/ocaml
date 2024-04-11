@@ -33,6 +33,7 @@ type specific_operation =
   | Imultsubf of bool        (* multiply, optionally negate, and subtract *)
   | Ishiftaddi of int         (* shift and add *)
   | Ipopcounti of bool      (* counting the bits *)
+  | Ivec_add
 (* Addressing modes *)
 
 type addressing_mode =
@@ -95,6 +96,7 @@ let print_specific_operation printreg op ppf arg =
   | Ipopcounti t -> 
           fprintf ppf "popcounti %a"
             printreg arg.(0) 
+  | Ivec_add -> fprintf ppf "asd"  
       
 (* Specific operations that are pure *)
 

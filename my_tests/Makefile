@@ -21,3 +21,7 @@ norm_comp:
 #	../boot/ocamlrun ../ocamlopt -zbb -thead -I ../stdlib -ccopt -I../runtime popcont.c a.ml -o popcont.exe -verbose
 	../boot/ocamlrun ../ocamlopt -I ../stdlib -zbb -thead -S -c a.ml
 	mv a.s riscv_patched.s
+vec:
+	../boot/ocamlrun ../ocamlopt -I ../stdlib -S -c vec.ml
+def:
+	../boot/ocamlrun ../ocamlopt -I ../stdlib -S -c default_vec.ml
