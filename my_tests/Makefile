@@ -25,3 +25,6 @@ vec:
 	../boot/ocamlrun ../ocamlopt -I ../stdlib -S -c vec.ml
 def:
 	../boot/ocamlrun ../ocamlopt -I ../stdlib -S -c default_vec.ml
+
+bin:
+	../boot/ocamlrun ../ocamlopt -I ../stdlib -c vec.ml -o aaa
