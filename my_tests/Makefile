@@ -27,4 +27,5 @@ def:
 	../boot/ocamlrun ../ocamlopt -I ../stdlib -S -c default_vec.ml
 
 bin:
-	../boot/ocamlrun ../ocamlopt -I ../stdlib -c vec.ml -o aaa
+	../boot/ocamlrun ../ocamlopt -I ../stdlib -ccopt -I../runtime popcont.c vec.ml -o vec.exe
+	./vec.exe

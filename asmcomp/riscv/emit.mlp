@@ -514,71 +514,51 @@ let emit_instr env i =
      end
 
   | Lop(Ispecific Ivec_add) ->
-   `addi    sp, sp, -32\n`;
-`sd	ra, 24(sp)\n`;
-`sd	a0, 8(sp)\n`;
-`sd	a1, 0(sp)\n`;
-`li	a1, 1\n`;
-`li	a0, 9\n`;
-`la	t2, caml_make_vect\n`;
-`call	caml_c_call@plt\n`;
-`li	a7, 1023\n`;
-`ld	a1, 0(sp)\n`;
-`ld	s2, -8(a1)\n`;
-`ld	s3, 0(a1)\n`;
-`li	s4, 1023\n`;
-`ld	a2, 8(sp)\n`;
-`ld	s5, -8(a2)\n`;
-`ld	s6, 0(a2)\n`;
-`add	s7, s6, s3\n`;
-`addi	s8, s7, -1\n`;
-`li	s9, 1023\n`;
-`ld	t2, -8(a0)\n`;
-`fence	r, w\n`;
-`sd	s8, 0(a0)\n`;
-`li	t3, 2047\n`;
-`ld	t4, -8(a1)\n`;
-`ld	t5, 8(a1)\n`;
-`li	t6, 2047\n`;
-`ld	s0, -8(a2)\n`;
-`ld	a3, 8(a2)\n`;
-`add	a3, a3, t5\n`;
-`addi	a3, a3, -1\n`;
-`li	a4, 2047\n`;
-`ld	a5, -8(a0)\n`;
-`addi	a5, a0, 8\n`;
-`fence	r, w\n`;
-`sd	a3, 0(a5)\n`;
-`li	a6, 3071\n`;
-`ld	a7, -8(a1)\n`;
-`ld	s2, 16(a1)\n`;
-`li	s3, 3071\n`;
-`ld	s4, -8(a2)\n`;
-`ld	s5, 16(a2)\n`;
-`add	s6, s5, s2\n`;
-`addi	s7, s6, -1\n`;
-`li	s8, 3071\n`;
-`ld	s9, -8(a0)\n`;
-`addi	t2, a0, 16\n`;
-`fence	r, w\n`;
-`sd	s7, 0(t2)\n`;
-`li	t3, 4095\n`;
-`ld	t4, -8(a1)\n`;
-`bleu	t4, t3, .L102\n`;
-`ld	t5, 24(a1)\n`;
-`li	t6, 4095\n`;
-`ld	s0, -8(a2)\n`;
-`ld	a1, 24(a2)\n`;
-`add	a1, a1, t5\n`;
-`addi	a2, a1, -1\n`;
-`li	a3, 4095\n`;
-`ld	a4, -8(a0)\n`;
-`addi	a5, a0, 24\n`;
-`fence	r, w\n`;
-`sd	a2, 0(a5)\n`;
-`ld	ra, 24(sp)\n`;
-`    addi    sp, sp, 32\n`;
-`ret\n`;
+ (*       ` addi    sp, sp, -32\n`;
+        ` sd    ra, 24(sp)\n`;
+        ` sd    a0, 8(sp)\n`;
+        ` sd	a1, 0(sp)\n`;
+        ` li	a1, 1\n`;
+        ` li	a0, 5\n`; (* 5 -> 5-1 /2  *)
+        ` la	t2, caml_make_vect\n`;
+        ` call	caml_c_call@plt\n`;
+        ` ld a2, 0({emit_reg i.arg.(0)})\n`;
+        ` ld a3, 0({emit_reg i.arg.(1)})\n`;
+        ` add	a6, a2, a3\n`;
+        ` addi	a6, a6, -1\n`;
+        ` fence r, w\n`;
+        ` sd a6, 0(a0)\n`;
+        ` ld a2, 8({emit_reg i.arg.(0)})\n`;
+        ` ld a3, 8({emit_reg i.arg.(1)})\n`;
+        ` add	a2, a2, a3\n`; 
+        ` addi	a2, a2, -1\n`;
+        ` addi a3, a0, 8\n`;
+        ` fence r, w\n`;
+        ` sd a2, 8(a0)\n`;
+        ` mv {emit_reg i.res.(0)}, a0\n`; (*s6 -> a0*)
+        ` ld ra, 24(sp)\n`;
+        ` ld a0, 8(sp)\n`;
+        ` addi sp, sp, 32\n`;*)
+         ` addi sp, sp, -32\n`;
+         ` sd ra, 24(sp)\n`;
+         ` sd a1, 8(sp)\n`;
+         ` sd a0, 0(sp)\n`;
+         ` li a1, 1\n`;
+         ` li a0, 9\n`;
+         ` la	t2, caml_make_vect\n`;
+         ` call	caml_c_call@plt\n`;
+
+         ` li t0, 4\n`;
+         ` vsetvli t0, x0, e64\n`;
+        ` vle64.v v0, 0({emit_reg i.arg.(0)})\n`;
+        ` vle64.v v1, 0({emit_reg i.arg.(1)})\n`;
+        ` vadd.vv v2, v0, v1\n`;
+        ` vse64.v v2, 0(a0)\n`;
+        ` mv {emit_reg i.res.(0)}, a0\n`;
+        ` ld ra, 24(sp)\n`;
+        ` ld a0, 8(sp)\n`;
+        ` addi sp, sp, 32\n`;
+
 
   | Lop(Ispecific sop) ->
       let instr = name_for_specific sop in

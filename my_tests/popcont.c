@@ -7,7 +7,7 @@ CAMLprim value popcount(value arg)
 
 	CAMLreturn(Val_int(__builtin_popcount(Int_val(arg))));
 }
-int myfunc(int n, int e, int y)
+int vec_add(int n, int e)
 {
 	return 1;
 }

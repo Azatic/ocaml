@@ -1,0 +1,315 @@
+	.option pic
+	.file ""
+	.section .data
+	.globl	camlVec.data_begin
+	.type	camlVec.data_begin, @object
+camlVec.data_begin:
+	.section .text
+	.globl	camlVec.code_begin
+	.type	camlVec.code_begin, @object
+camlVec.code_begin:
+	.section .data
+	.section .data
+	.quad	3063
+camlVec.4:
+	.quad	camlVec.fun_331
+	.quad	72057594037927941
+	.section .data
+	.quad	3840
+	.globl	camlVec
+	.type	camlVec, @object
+camlVec:
+	.quad	1
+	.quad	1
+	.quad	1
+	.section .data
+	.globl	camlVec.gc_roots
+	.type	camlVec.gc_roots, @object
+camlVec.gc_roots:
+	.quad	camlVec
+	.quad	0
+	.globl	camlVec.fun_331
+	.type	camlVec.fun_331, @function
+	.section .text
+	.align	2
+camlVec.fun_331:
+	.cfi_startproc
+	ld	t1, 40(s11)
+	addi	t1, t1, 328
+	bltu	sp, t1, .L101
+.L102:
+        addi    sp, sp, -16
+	.cfi_adjust_cfa_offset	16
+	sd	ra, 8(sp)
+	.cfi_offset 1, -8
+.L100:
+	call	camlStdlib.string_of_int_175@plt
+.L103:
+	mv      a1, a0
+	la	a2, camlStdlib
+	ld	a0, 304(a2)
+	call	camlStdlib.output_string_253@plt
+.L104:
+	la	a1, camlVec.3
+	la	a5, camlStdlib
+	ld	a0, 304(a5)
+	ld	ra, 8(sp)
+        addi    sp, sp, 16
+	.cfi_adjust_cfa_offset	-16
+	tail	camlStdlib.output_string_253@plt
+.L101:
+	li	t1, 34
+	addi	sp, sp, -16
+	sd	t1, 0(sp)
+	sd	ra, 8(sp)
+	call	caml_call_realloc_stack@plt
+	ld	ra, 8(sp)
+	addi	sp, sp, 16
+	j	.L102
+	.cfi_endproc
+	.size	camlVec.fun_331, .-camlVec.fun_331
+	.section .data
+	.quad	2044
+camlVec.3:
+	.byte	32
+	.space	6
+	.byte	6
+	.section .data
+	.quad	7936
+camlVec.2:
+	.quad	5
+	.quad	21
+	.quad	5
+	.quad	5
+	.quad	7
+	.quad	3
+	.quad	221
+	.section .data
+	.quad	6912
+camlVec.1:
+	.quad	3
+	.quad	5
+	.quad	7
+	.quad	9
+	.quad	7
+	.quad	9
+	.globl	camlVec.entry
+	.type	camlVec.entry, @function
+	.section .text
+	.align	2
+camlVec.entry:
+	.cfi_startproc
+	ld	t1, 40(s11)
+	addi	t1, t1, 328
+	bltu	sp, t1, .L106
+.L107:
+        addi    sp, sp, -16
+	.cfi_adjust_cfa_offset	16
+	sd	ra, 8(sp)
+	.cfi_offset 1, -8
+.L105:
+	la	a0, camlVec.1
+	la	t2, caml_obj_dup
+	call	caml_c_call@plt
+.L108:
+	mv      a1, a0
+	la	a0, camlVec
+	mv	s0, sp
+	.cfi_remember_state
+	.cfi_def_cfa_register 21
+	ld	sp, 64(s11)
+	call	caml_initialize@plt
+	mv	sp, s0
+	.cfi_restore_state
+	la	a0, camlVec.2
+	la	t2, caml_obj_dup
+	call	caml_c_call@plt
+.L109:
+	mv      a1, a0
+	la	a5, camlVec
+	addi	a0, a5, 8
+	mv	s0, sp
+	.cfi_remember_state
+	.cfi_def_cfa_register 21
+	ld	sp, 64(s11)
+	call	caml_initialize@plt
+	mv	sp, s0
+	.cfi_restore_state
+	la	a7, camlVec
+	ld	s2, 8(a7)
+	ld	s4, 0(a7)
+ addi sp, sp, -32
+ sd ra, 24(sp)
+ sd a1, 8(sp)
+ sd a0, 0(sp)
+ li a1, 1
+ li a0, 9
+ la	t2, caml_make_vect
+ call	caml_c_call@plt
+ li t0, 4
+ vsetvli t0, x0, e64
+ vle64.v v0, 0(s4)
+ vle64.v v1, 0(s2)
+ vadd.vv v2, v0, v1
+ vse64.v v2, 0(a0)
+ mv a1, a0
+ ld ra, 24(sp)
+ ld a0, 8(sp)
+ addi sp, sp, 32
+	addi	a0, a7, 16
+	mv	s0, sp
+	.cfi_remember_state
+	.cfi_def_cfa_register 21
+	ld	sp, 64(s11)
+	call	caml_initialize@plt
+	mv	sp, s0
+	.cfi_restore_state
+	la	s8, camlVec
+	ld	s9, 16(s8)
+	li	t2, 1023
+	ld	t3, -8(s9)
+	bleu	t3, t2, .L110
+	ld	a0, 0(s9)
+	call	camlStdlib.string_of_int_175@plt
+.L112:
+	mv      a1, a0
+	la	t6, camlStdlib
+	ld	a0, 304(t6)
+	call	camlStdlib.output_string_253@plt
+.L113:
+	la	a1, camlVec
+	ld	a1, 16(a1)
+	la	a0, camlVec.4
+	call	camlStdlib__Array.iter_330@plt
+.L114:
+	li	a0, 1
+	ld	ra, 8(sp)
+        addi    sp, sp, 16
+	.cfi_adjust_cfa_offset	-16
+	ret
+.L110:
+	call	caml_ml_array_bound_error@plt
+.L111:
+.L106:
+	li	t1, 34
+	addi	sp, sp, -16
+	sd	t1, 0(sp)
+	sd	ra, 8(sp)
+	call	caml_call_realloc_stack@plt
+	ld	ra, 8(sp)
+	addi	sp, sp, 16
+	j	.L107
+	.cfi_endproc
+	.size	camlVec.entry, .-camlVec.entry
+	.section .data
+	.quad	vec_add
+	.section .text
+	.globl	camlVec.code_end
+	.type	camlVec.code_end, @object
+camlVec.code_end:
+	.long	0
+	.section .data
+	.globl	camlVec.data_end
+	.type	camlVec.data_end, @object
+	.quad	0
+camlVec.data_end:
+	.quad	0
+	.section .data
+	.globl	camlVec.frametable
+	.type	camlVec.frametable, @object
+camlVec.frametable:
+	.quad	8
+	.quad	.L114
+	.short	17
+	.short	0
+	.align	2
+	.long	(.L115 - .) + 0x0
+	.align	3
+	.quad	.L113
+	.short	17
+	.short	0
+	.align	2
+	.long	(.L116 - .) + 0x0
+	.align	3
+	.quad	.L112
+	.short	17
+	.short	0
+	.align	2
+	.long	(.L117 - .) + 0x0
+	.align	3
+	.quad	.L111
+	.short	17
+	.short	0
+	.align	2
+	.long	(.L118 - .) + 0x0
+	.align	3
+	.quad	.L109
+	.short	17
+	.short	0
+	.align	2
+	.long	(.L119 - .) + 0x0
+	.align	3
+	.quad	.L108
+	.short	17
+	.short	0
+	.align	2
+	.long	(.L120 - .) + 0x0
+	.align	3
+	.quad	.L104
+	.short	17
+	.short	0
+	.align	2
+	.long	(.L116 - .) + 0x0
+	.align	3
+	.quad	.L103
+	.short	17
+	.short	0
+	.align	2
+	.long	(.L117 - .) + 0x0
+	.align	3
+	.align	2
+.L117:
+	.long	(.L122 - .) + 0xe0000000
+	.long	0x1e9270
+	.align	2
+.L118:
+	.long	(.L124 - .) + 0x6c000000
+	.long	0xe130
+	.align	2
+.L116:
+	.long	(.L122 - .) + 0xe0000000
+	.long	0x1e9120
+	.align	2
+.L120:
+	.long	(.L125 - .) + 0x7c000000
+	.long	0x40b0
+	.align	2
+.L115:
+	.long	(.L124 - .) + 0x4000000
+	.long	0xf091
+	.align	2
+.L119:
+	.long	(.L126 - .) + 0x90000000
+	.long	0x50c0
+.L121:
+	.byte	115,116,100,108,105,98,46,109,108,0
+.L123:
+	.byte	118,101,99,46,109,108,0
+	.align	2
+.L126:
+	.long	(.L123 - .) + 0x0
+	.byte	86,101,99,46,97,114,114,50,49,0
+	.align	2
+.L125:
+	.long	(.L123 - .) + 0x0
+	.byte	86,101,99,46,97,114,114,49,0
+	.align	2
+.L124:
+	.long	(.L123 - .) + 0x0
+	.byte	86,101,99,0
+	.align	2
+.L122:
+	.long	(.L121 - .) + 0x0
+	.byte	83,116,100,108,105,98,46,112,114,105,110,116,95,105,110,116
+	.byte	0
+	.align	3
