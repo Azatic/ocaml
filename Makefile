@@ -289,7 +289,7 @@ opt-core: runtimeopt
 opt: checknative
 	$(MAKE) runtimeopt
 	$(MAKE) ocamlopt
-	$(MAKE) libraryopt
+#	$(MAKE) libraryopt
 	$(MAKE) otherlibrariesopt ocamltoolsopt
 
 # Native-code versions of the tools
