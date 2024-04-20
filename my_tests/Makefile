@@ -38,3 +38,7 @@ comp:
 	$(MAKE) bin
 try:
 	gcc-10 -march=rv64imafdcv0p7 -misa-spec=20191213 c_example.c
+.PHONY: test
+test:
+	../boot/ocamlrun ../ocamlopt -I ../stdlib -ccopt -I../runtime popcont.c bench.ml -o test
+	./test
