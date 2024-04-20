@@ -27,5 +27,14 @@ def:
 	../boot/ocamlrun ../ocamlopt -I ../stdlib -S -c default_vec.ml
 
 bin:
-	../boot/ocamlrun ../ocamlopt -I ../stdlib -ccopt -I../runtime popcont.c vec.ml -o vec.exe
+	../boot/ocamlrun ../ocamlopt -I ../stdlib -ccopt -I../runtime popcont.c vec.ml -o vec.exe -verbose
 	./vec.exe
+rvv:
+	gcc  -fno-tree-vectorize vector_intrinsic.cpp -lbenchmark -pthread -o vector_bench -march=rv64imafdcvsu
+vm:
+	vim ../asmcomp/riscv/emit.mlp
+comp:
+	$(MAKE)  opt -j4 -C ..
+	$(MAKE) bin
+try:
+	gcc-10 -march=rv64imafdcv0p7 -misa-spec=20191213 c_example.c
