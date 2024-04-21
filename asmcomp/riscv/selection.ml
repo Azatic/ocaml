@@ -85,7 +85,9 @@ method! select_operation op args dbg =
         | false , _ -> super#select_operation op args dbg
                  end
         | (Cextcall ("vec_add", _,_,_), [arg1; arg2]) ->
-        ((Ispecific Ivec_add),([arg1; arg2])) 
+        ((Ispecific Ivec_add),([arg1; arg2]))
+	 | (Cextcall ("vector_add", _,_,_), [arg1; arg2;arg3]) ->
+        ((Ispecific Ivector_add),([arg1; arg2; arg3])) 
   | _ ->
       super#select_operation op args dbg
               

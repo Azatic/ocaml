@@ -7,6 +7,11 @@ int vec_add(int n, int e)
 	return 1;
 }
 
+int vector_add(int v)
+{ 
+	return 1;
+}
+
 //CAMLprim value caml_check(value arg)
 //{
 //		CAMLparam1(arg);
