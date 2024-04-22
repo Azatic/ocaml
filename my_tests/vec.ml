@@ -9,8 +9,12 @@ let arr21 = [| 2; 2; 2; 2;2;2;2;234|]
 
 (*let vecadd1 arr1 arr2 = vecadd arr1 arr2 arr2.len*)
 
+<<<<<<< HEAD
 let arr3 = vector_add arr1 arr21 8
 
+=======
+let arr3 = vector_add arr1 arr21 5
+>>>>>>> 6882971a56 (a group of 4 registers is used)
 
 
 (*let () = print_int arr3.(0)*)

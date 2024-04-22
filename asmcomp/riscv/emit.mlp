@@ -581,38 +581,31 @@ let emit_instr env i =
  | Lop(Ispecific Ivector_add) ->
                  
         
-         ` addi sp, sp, -48\n`;
-         ` sd ra, 24(sp)\n`;
-         ` sd a1, 8(sp)\n`;
-         ` sd a0, 0(sp)\n`;
+         ` addi sp, sp, -32\n`;
          ` li a1, 1\n`;
-        (* ` ld a0, {emit_reg i.arg.(2)}\n`;*)
-         ` li a0, 17\n`;
+         ` mv a0, {emit_reg i.arg.(2)}\n`;
          ` la   t2, caml_make_vect\n`;
          ` call caml_c_call@plt\n`;
-         (*` srl a2, {emit_reg i.arg.(2)}, 1\n`;*)
-         ` li a2, 16\n`;
-         ` sd a0, 32(sp)\n`;
+         ` srli a2, {emit_reg i.arg.(2)}, 1\n`;
+         ` slli a2, a2, 2\n`;
+         ` sd a0, 8(sp)\n`;
      ` loop:\n`;
-        ` vsetvli a4, a2, e16, m1\n`;
-        ` vle32.v v0, ({emit_reg i.arg.(0)})\n`;
-        ` vle32.v v2, ({emit_reg i.arg.(1)})\n`;
-        ` vle32.v v4, (a0)\n`;
-        ` vadd.vv v6, v2, v0\n`;
-        ` vsub.vv v6, v6, v4\n`;
-        ` vse32.v v6, (a0)\n`;
+        ` vsetvli a4, a2, e16, m4\n`;
+        ` vle16.v v0, ({emit_reg i.arg.(0)})\n`;
+        ` vle16.v v4, ({emit_reg i.arg.(1)})\n`;
+        ` vle16.v v8, (a0)\n`;
+        ` vadd.vv v12, v4, v0\n`;
+        ` vsub.vv v12, v12, v8\n`;
+        ` vse16.v v4, (a0)\n`;
         ` sub a2, a2, a4\n`;
-        ` slli a4, a4, 2\n`;
+        ` slli a4, a4, 1\n`;
         ` add {emit_reg i.arg.(0)}, {emit_reg i.arg.(0)}, a4\n`;
         ` add {emit_reg i.arg.(1)}, {emit_reg i.arg.(1)}, a4\n`;
         ` add a0, a0, a4\n`;
         ` bnez a2, loop\n`;
-        ` ld a0, 32(sp)\n`;
-        ` mv {emit_reg i.res.(0)}, a0\n`;
-        ` ld ra, 24(sp)\n`;
-        ` sd a1, 8(sp)\n`;
         ` ld a0, 8(sp)\n`;
-        ` addi sp, sp, 48\n`;
+        ` mv {emit_reg i.res.(0)}, a0\n`;
+        ` addi sp, sp, 32\n`;
 
 
 
