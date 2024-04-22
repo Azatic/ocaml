@@ -1,13 +1,13 @@
 open Stdlib
 
-external vecadd : int array ->int array -> int array = "vec_add"
+external vecadd : int array ->int array ->int -> int array = "vector_add"
 
 let arr1 = [| 111; 2; 3; 4;3;4;2;2 |]
 let arr2 = [| 211; 3; 2; 1;3;1;110;234|]
 
 let measure_time v1 v2 =
   let start_time = Sys.time () in
-  let result = vecadd v1 v2 in
+  let result = vecadd v1 v2 8  in
   let end_time = Sys.time () in
   let execution_time = end_time -. start_time in
   execution_time

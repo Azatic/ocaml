@@ -582,6 +582,8 @@ let emit_instr env i =
                  
         
          ` addi sp, sp, -32\n`;
+         ` sd {emit_reg i.arg.(0)}, 16(sp)\n`;
+         ` sd {emit_reg i.arg.(1)}, 24(sp)\n`;
          ` li a1, 1\n`;
          ` mv a0, {emit_reg i.arg.(2)}\n`;
          ` la   t2, caml_make_vect\n`;
@@ -589,22 +591,25 @@ let emit_instr env i =
          ` srli a2, {emit_reg i.arg.(2)}, 1\n`;
          ` slli a2, a2, 2\n`;
          ` sd a0, 8(sp)\n`;
-     ` loop:\n`;
+         let lbl = new_label() in
+         ` loop{emit_int lbl}:\n`;
         ` vsetvli a4, a2, e16, m4\n`;
         ` vle16.v v0, ({emit_reg i.arg.(0)})\n`;
         ` vle16.v v4, ({emit_reg i.arg.(1)})\n`;
         ` vle16.v v8, (a0)\n`;
         ` vadd.vv v12, v4, v0\n`;
         ` vsub.vv v12, v12, v8\n`;
-        ` vse16.v v4, (a0)\n`;
+        ` vse16.v v12, (a0)\n`;
         ` sub a2, a2, a4\n`;
         ` slli a4, a4, 1\n`;
         ` add {emit_reg i.arg.(0)}, {emit_reg i.arg.(0)}, a4\n`;
         ` add {emit_reg i.arg.(1)}, {emit_reg i.arg.(1)}, a4\n`;
         ` add a0, a0, a4\n`;
-        ` bnez a2, loop\n`;
+        ` bnez a2, loop{emit_int lbl}\n`;
         ` ld a0, 8(sp)\n`;
         ` mv {emit_reg i.res.(0)}, a0\n`;
+        ` ld {emit_reg i.arg.(0)}, 16(sp)\n`;
+        ` ld {emit_reg i.arg.(1)}, 24(sp)\n`;
         ` addi sp, sp, 32\n`;
 
 
