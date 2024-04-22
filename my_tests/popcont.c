@@ -12,6 +12,11 @@ int vector_add(int v)
 	return 1;
 }
 
+int simd_find(int v)
+{ 
+        return 1;
+}
+
 //CAMLprim value caml_check(value arg)
 //{
 //		CAMLparam1(arg);

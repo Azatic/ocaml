@@ -261,6 +261,7 @@ let name_for_specific = function
   | Ishiftaddi _ -> "th.addsl"
   | Ivec_add -> "add"
   | Ivector_add -> "vec_add"
+  | Isimd_find -> "simd_find"
 (* Output the assembly code for an instruction *)
 
 let emit_instr env i =
@@ -591,27 +592,60 @@ let emit_instr env i =
          ` srli a2, {emit_reg i.arg.(2)}, 1\n`;
          ` slli a2, a2, 2\n`;
          ` sd a0, 8(sp)\n`;
+        (* ` vle16.v v8, (a0)\n`;*)
          let lbl = new_label() in
          ` loop{emit_int lbl}:\n`;
-        ` vsetvli a4, a2, e16, m4\n`;
+        ` vsetvli t1, a2, e16, m4\n`;
         ` vle16.v v0, ({emit_reg i.arg.(0)})\n`;
         ` vle16.v v4, ({emit_reg i.arg.(1)})\n`;
         ` vle16.v v8, (a0)\n`;
         ` vadd.vv v12, v4, v0\n`;
         ` vsub.vv v12, v12, v8\n`;
         ` vse16.v v12, (a0)\n`;
-        ` sub a2, a2, a4\n`;
-        ` slli a4, a4, 1\n`;
-        ` add {emit_reg i.arg.(0)}, {emit_reg i.arg.(0)}, a4\n`;
-        ` add {emit_reg i.arg.(1)}, {emit_reg i.arg.(1)}, a4\n`;
-        ` add a0, a0, a4\n`;
+        ` sub a2, a2, t1\n`;
+        ` slli t1, t1, 1\n`;
+        ` add {emit_reg i.arg.(0)}, {emit_reg i.arg.(0)}, t1\n`;
+        ` add {emit_reg i.arg.(1)}, {emit_reg i.arg.(1)}, t1\n`;
+        ` add a0, a0, t1\n`;
         ` bnez a2, loop{emit_int lbl}\n`;
         ` ld a0, 8(sp)\n`;
         ` mv {emit_reg i.res.(0)}, a0\n`;
         ` ld {emit_reg i.arg.(0)}, 16(sp)\n`;
         ` ld {emit_reg i.arg.(1)}, 24(sp)\n`;
         ` addi sp, sp, 32\n`;
-
+ | Lop(Ispecific Isimd_find) ->
+(*
+    ` addi sp, sp, -32\n`;
+    ` mv a1, {emit_reg i.arg.(1)}\n`; (*a0 - array, a1 - find nubmer a2 - len array*)
+    ` mv a2, {emit_reg i.arg.(2)}\n`; 
+    ` srli a2, {emit_reg i.arg.(2)}, 1\n`;
+   (* ` slli a2, a2, 2\n`;i*)
+    ` mv a0, {emit_reg i.arg.(0)}`;
+    let lbl = new_label() in
+    `loop{emit_int lbl}:\n`;
+    `vsetvli a4, a2, e64, m1\n`;
+    `vle16.v v0, (a0)\n`;
+    `vseq.vi v4, v0, a1\n`;
+    `vmsbf.m t1, v4, v0\n`;
+    `vfirst.m t2, t1, v0\n`;
+    `bnez t2, found\n`;
+    `addi a0, a0, 2\n`;
+    `sub a2, a2, 1\n`;
+    `bnez a2, loop{emit_int lbl}\n`;
+    
+    `li a0, -1\n`;
+    `ret\n`;
+    
+    ` found:\n`;
+    `vmsbf.m t3, t2, v0\n`;
+    `slli t3, t3, 1\n`;
+    `add a0, a0, t3\n`;
+    
+    `ld a0, 8(sp)\n`;
+    `li {emit_reg i.res.(0)}, 5\n`;
+    `ld {emit_reg i.arg.(0)}, 16(sp)\n`;
+    `ld {emit_reg i.arg.(1)}, 24(sp)\n`;
+    `addi sp, sp, 32\n`;*) ` `
 
 
   | Lop(Ispecific sop) ->

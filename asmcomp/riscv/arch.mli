@@ -30,6 +30,7 @@ type specific_operation =
   | Ipopcounti of bool
   | Ivec_add
   | Ivector_add
+  | Isimd_find
 (* Addressing modes *)
 
 type addressing_mode =

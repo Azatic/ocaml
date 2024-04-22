@@ -35,6 +35,7 @@ type specific_operation =
   | Ipopcounti of bool      (* counting the bits *)
   | Ivec_add
   | Ivector_add
+  | Isimd_find
 (* Addressing modes *)
 
 type addressing_mode =
@@ -99,6 +100,7 @@ let print_specific_operation printreg op ppf arg =
             printreg arg.(0) 
   | Ivec_add -> fprintf ppf "asd" 
   | Ivector_add -> fprintf ppf "vector_add"
+  | Isimd_find -> fprintf ppf "simd_find"
       
 (* Specific operations that are pure *)
 
