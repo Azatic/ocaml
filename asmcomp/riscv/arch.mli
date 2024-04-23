@@ -28,9 +28,7 @@ type specific_operation =
   | Imultsubf of bool        (* multiply, optionally negate, and subtract *)
   | Ishiftaddi of int
   | Ipopcounti of bool
-  | Ivec_add
   | Ivector_add
-  | Isimd_find
 (* Addressing modes *)
 
 type addressing_mode =

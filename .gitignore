@@ -15,9 +15,7 @@
 
 # general patterns
 .ocamlformat
-/my_tests/*.o
-/my_tests/*.s
-/my_tests/*.exe
+/my_tests
 *.o
 *.a
 *.so

@@ -259,9 +259,7 @@ let name_for_specific = function
   | Imultsubf true  -> "fnmsub.d"
   | Ipopcounti _  -> "popcnt"
   | Ishiftaddi _ -> "th.addsl"
-  | Ivec_add -> "add"
   | Ivector_add -> "vec_add"
-  | Isimd_find -> "simd_find"
 (* Output the assembly code for an instruction *)
 
 let emit_instr env i =
@@ -515,128 +513,35 @@ let emit_instr env i =
                   ` addi {emit_reg i.res.(0)} , {emit_reg i.res.(0)}, -1\n`;
      end
 
-  | Lop(Ispecific Ivec_add) ->
- (*       ` addi    sp, sp, -32\n`;
-        ` sd    ra, 24(sp)\n`;
-        ` sd    a0, 8(sp)\n`;
-        ` sd	a1, 0(sp)\n`;
-        ` li	a1, 1\n`;
-        ` li	a0, 5\n`; (* 5 -> 5-1 /2  *)
-        ` la	t2, caml_make_vect\n`;
-        ` call	caml_c_call@plt\n`;
-        ` ld a2, 0({emit_reg i.arg.(0)})\n`;
-        ` ld a3, 0({emit_reg i.arg.(1)})\n`;
-        ` add	a6, a2, a3\n`;
-        ` addi	a6, a6, -1\n`;
-        ` fence r, w\n`;
-        ` sd a6, 0(a0)\n`;
-        ` ld a2, 8({emit_reg i.arg.(0)})\n`;
-        ` ld a3, 8({emit_reg i.arg.(1)})\n`;
-        ` add	a2, a2, a3\n`; 
-        ` addi	a2, a2, -1\n`;
-        ` addi a3, a0, 8\n`;
-        ` fence r, w\n`;
-        ` sd a2, 8(a0)\n`;
-        ` mv {emit_reg i.res.(0)}, a0\n`; (*s6 -> a0*)
-        ` ld ra, 24(sp)\n`;
-        ` ld a0, 8(sp)\n`;
-        ` addi sp, sp, 32\n`;*)
-         ` addi sp, sp, -32\n`;
-         ` sd ra, 24(sp)\n`;
-         ` sd a1, 8(sp)\n`;
-         ` sd a0, 0(sp)\n`;
-         ` li a1, 1\n`;
-         ` li a0, 9\n`;
-         ` la	t2, caml_make_vect\n`;
-         ` call	caml_c_call@plt\n`;
-        
-        (* ` li t1, 1\n`;
-       (*  ` vsetvli t0, t1, e8, m8, ta, ma\n`;*)
-        ` li t0, 1\n`;
-        ` li t1, 64\n`;*)
-         (*` vsetvli a4, t1, e32, m1, ta, mu\n`;*)
-        ` li a2, 24\n`;
-       (* ` mv t0, a0\n`;
-         ` li a1, 1\n`;
-         ` li a0, 17\n`;
-         ` la	t2, caml_make_vect\n`;
-         ` call	caml_c_call@plt\n`;*)
-     (* ` vsetvli t0, a0, e32, m1, ta,ma\n`;*)
-     (* ` vvaddint64:\n`;*)
-        ` vsetvli a4, a2, e16, m2\n`;
-        ` vle64.v v0, ({emit_reg i.arg.(0)})\n`;
-        ` vle64.v v2, ({emit_reg i.arg.(1)})\n`;
-        ` vle64.v v4, (a0)\n`;
-        ` vadd.vv v0, v2, v0\n`;
-        ` vsub.vv v0, v0, v4\n`;
-       (* ` vadd.vv v1, v1, v3\n`;
-        ` vsub.vv v1, v1, v4\n`;*)
-        ` vse64.v v0, (a0)\n`;
-      (*  ` add a0, a0, a4\n`; *)
-      (*  ` add a0, a0, a4\n`;
-        ` vse64.v v1, (a0)\n`;*)
-        ` mv {emit_reg i.res.(0)}, a0\n`;
-        ` ld ra, 24(sp)\n`;
-        ` ld a0, 8(sp)\n`;
-        ` addi sp, sp, 32\n`;
  | Lop(Ispecific Ivector_add) ->
                  
-        
-         ` li a1, 1\n`;
-         ` mv a0, {emit_reg i.arg.(2)}\n`;
-         ` la   t2, caml_make_vect\n`;
-         ` call caml_c_call@plt\n`;
+          
+         ` sd {emit_reg i.arg.(0)}, -8(sp)\n`;
+         ` sd {emit_reg i.arg.(1)}, -16(sp)\n`;
          ` srli {emit_reg reg_tmp}, {emit_reg i.arg.(2)}, 1\n`;
          ` slli {emit_reg reg_tmp}, {emit_reg reg_tmp}, 2\n`;
-         ` mv {emit_reg i.res.(0)}, a0\n`;
+         ` mv {emit_reg i.res.(0)}, {emit_reg i.arg.(3)}\n`;
+         ` ld {emit_reg i.arg.(0)}, -8(sp)\n`;
+         ` ld {emit_reg i.arg.(1)}, -16(sp)\n`;
+         ` sd {emit_reg i.res.(0)}, -24(sp)\n`;
          let lbl = new_label() in
          ` loop{emit_int lbl}:\n`;
-        ` vsetvli {emit_reg reg_tmp2}, {emit_reg reg_tmp}, e16, m4\n`;
+        ` vsetvli {emit_reg reg_tmp2}, {emit_reg reg_tmp}, e16, m8\n`;
         ` vle16.v v0, ({emit_reg i.arg.(0)})\n`;
-        ` vle16.v v4, ({emit_reg i.arg.(1)})\n`;
-        ` vle16.v v8, (a0)\n`;
-        ` vadd.vv v12, v4, v0\n`;
-        ` vsub.vv v12, v12, v8\n`;
-        ` vse16.v v12, (a0)\n`;
+        ` vle16.v v8, ({emit_reg i.arg.(1)})\n`;
+        ` vle16.v v16, ({emit_reg i.res.(0)})\n`;
+        ` vadd.vv v24, v8, v0\n`;
+        ` vsub.vv v24, v24, v16\n`;
+        ` vse16.v v24, ({emit_reg i.res.(0)})\n`;
         ` sub {emit_reg reg_tmp}, {emit_reg reg_tmp}, {emit_reg reg_tmp2}\n`;
         ` slli {emit_reg reg_tmp2}, {emit_reg reg_tmp2}, 1\n`;
         ` add {emit_reg i.arg.(0)}, {emit_reg i.arg.(0)}, {emit_reg reg_tmp2}\n`;
         ` add {emit_reg i.arg.(1)}, {emit_reg i.arg.(1)}, {emit_reg reg_tmp2}\n`;
-        ` add a0, a0, {emit_reg reg_tmp2}\n`;
+        ` add {emit_reg i.res.(0)}, {emit_reg i.res.(0)}, {emit_reg reg_tmp2}\n`;
         ` bnez {emit_reg reg_tmp}, loop{emit_int lbl}\n`;
- | Lop(Ispecific Isimd_find) ->
-(*
-    ` addi sp, sp, -32\n`;
-    ` mv a1, {emit_reg i.arg.(1)}\n`; (*a0 - array, a1 - find nubmer a2 - len array*)
-    ` mv a2, {emit_reg i.arg.(2)}\n`; 
-    ` srli a2, {emit_reg i.arg.(2)}, 1\n`;
-   (* ` slli a2, a2, 2\n`;i*)
-    ` mv a0, {emit_reg i.arg.(0)}`;
-    let lbl = new_label() in
-    `loop{emit_int lbl}:\n`;
-    `vsetvli a4, a2, e64, m1\n`;
-    `vle16.v v0, (a0)\n`;
-    `vseq.vi v4, v0, a1\n`;
-    `vmsbf.m t1, v4, v0\n`;
-    `vfirst.m t2, t1, v0\n`;
-    `bnez t2, found\n`;
-    `addi a0, a0, 2\n`;
-    `sub a2, a2, 1\n`;
-    `bnez a2, loop{emit_int lbl}\n`;
-    
-    `li a0, -1\n`;
-    `ret\n`;
-    
-    ` found:\n`;
-    `vmsbf.m t3, t2, v0\n`;
-    `slli t3, t3, 1\n`;
-    `add a0, a0, t3\n`;
-    
-    `ld a0, 8(sp)\n`;
-    `li {emit_reg i.res.(0)}, 5\n`;
-    `ld {emit_reg i.arg.(0)}, 16(sp)\n`;
-    `ld {emit_reg i.arg.(1)}, 24(sp)\n`;
-    `addi sp, sp, 32\n`;*) ` `
+        ` ld {emit_reg i.res.(0)}, -24(sp)\n`;
+        ` ld {emit_reg i.arg.(0)}, -8(sp)\n`;
+        ` ld {emit_reg i.arg.(1)}, -16(sp)\n`;
 
 
   | Lop(Ispecific sop) ->
