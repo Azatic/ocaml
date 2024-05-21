@@ -519,22 +519,21 @@ let emit_instr env i =
          ` sd {emit_reg i.arg.(0)}, -8(sp)\n`;
          ` sd {emit_reg i.arg.(1)}, -16(sp)\n`;
          ` srli {emit_reg reg_tmp}, {emit_reg i.arg.(2)}, 1\n`;
-         ` slli {emit_reg reg_tmp}, {emit_reg reg_tmp}, 2\n`;
          ` mv {emit_reg i.res.(0)}, {emit_reg i.arg.(3)}\n`;
          ` ld {emit_reg i.arg.(0)}, -8(sp)\n`;
          ` ld {emit_reg i.arg.(1)}, -16(sp)\n`;
          ` sd {emit_reg i.res.(0)}, -24(sp)\n`;
          let lbl = new_label() in
          ` loop{emit_int lbl}:\n`;
-        ` vsetvli {emit_reg reg_tmp2}, {emit_reg reg_tmp}, e16, m8\n`;
-        ` vle16.v v0, ({emit_reg i.arg.(0)})\n`;
-        ` vle16.v v8, ({emit_reg i.arg.(1)})\n`;
-        ` vle16.v v16, ({emit_reg i.res.(0)})\n`;
+        ` vsetvli {emit_reg reg_tmp2}, {emit_reg reg_tmp}, e64, m8\n`;
+        ` vle.v v0, ({emit_reg i.arg.(0)})\n`;
+        ` vle.v v8, ({emit_reg i.arg.(1)})\n`;
+        ` vle.v v16, ({emit_reg i.res.(0)})\n`;
         ` vadd.vv v24, v8, v0\n`;
         ` vsub.vv v24, v24, v16\n`;
-        ` vse16.v v24, ({emit_reg i.res.(0)})\n`;
+        ` vse.v v24, ({emit_reg i.res.(0)})\n`;
         ` sub {emit_reg reg_tmp}, {emit_reg reg_tmp}, {emit_reg reg_tmp2}\n`;
-        ` slli {emit_reg reg_tmp2}, {emit_reg reg_tmp2}, 1\n`;
+        ` slli {emit_reg reg_tmp2}, {emit_reg reg_tmp2}, 3\n`;
         ` add {emit_reg i.arg.(0)}, {emit_reg i.arg.(0)}, {emit_reg reg_tmp2}\n`;
         ` add {emit_reg i.arg.(1)}, {emit_reg i.arg.(1)}, {emit_reg reg_tmp2}\n`;
         ` add {emit_reg i.res.(0)}, {emit_reg i.res.(0)}, {emit_reg reg_tmp2}\n`;
