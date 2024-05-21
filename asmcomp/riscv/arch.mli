@@ -29,6 +29,7 @@ type specific_operation =
   | Ishiftaddi of int
   | Ipopcounti of bool
   | Ivector_add
+  | Icaml_find
 (* Addressing modes *)
 
 type addressing_mode =

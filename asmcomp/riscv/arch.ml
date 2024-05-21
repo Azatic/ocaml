@@ -34,6 +34,7 @@ type specific_operation =
   | Ishiftaddi of int         (* shift and add *)
   | Ipopcounti of bool      (* counting the bits *)
   | Ivector_add
+  | Icaml_find
 (* Addressing modes *)
 
 type addressing_mode =
@@ -97,6 +98,7 @@ let print_specific_operation printreg op ppf arg =
           fprintf ppf "popcounti %a"
             printreg arg.(0) 
   | Ivector_add -> fprintf ppf "vector_add"
+  | Icaml_find -> fprintf ppf "caml_find"
       
 (* Specific operations that are pure *)
 

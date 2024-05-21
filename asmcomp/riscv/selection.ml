@@ -84,8 +84,10 @@ method! select_operation op args dbg =
                       ([arg1]))
         | false , _ -> super#select_operation op args dbg
                  end
-         | (Cextcall ("vector_add", _,_,_), [arg1; arg2;arg3;arg4]) ->
+  | (Cextcall ("vector_add", _,_,_), [arg1; arg2;arg3;arg4]) ->
                          ((Ispecific Ivector_add),([arg1; arg2; arg3;arg4]))
+  | (Cextcall ("caml_find", _, _, _), [arg1; arg2; arg3]) ->
+                  ((Ispecific Icaml_find), ([arg1; arg2; arg3]))
 
   | _ ->
       super#select_operation op args dbg

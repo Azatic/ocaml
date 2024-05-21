@@ -260,6 +260,7 @@ let name_for_specific = function
   | Ipopcounti _  -> "popcnt"
   | Ishiftaddi _ -> "th.addsl"
   | Ivector_add -> "vec_add"
+  | Icaml_find -> "find"
 (* Output the assembly code for an instruction *)
 
 let emit_instr env i =
@@ -541,6 +542,37 @@ let emit_instr env i =
         ` ld {emit_reg i.res.(0)}, -24(sp)\n`;
         ` ld {emit_reg i.arg.(0)}, -8(sp)\n`;
         ` ld {emit_reg i.arg.(1)}, -16(sp)\n`;
+  | Lop(Ispecific Icaml_find) ->
+                  (* arg0 - array, arg1 - find, arg2 len*)
+        (* tmp - len, tmp2 - the remainder of the array  *)
+        ` sd {emit_reg i.arg.(0)}, -8(sp)\n`;
+        ` srli {emit_reg i.arg.(2)}, {emit_reg i.arg.(2)}, 1\n`;
+       (* ` srli {emit_reg i.arg.(1)}, {emit_reg i.arg.(1)}, 1\n`;*)
+        ` li {emit_reg reg_tmp}, 0\n`;
+       (* ` li {emit_reg reg_tmp}, -1\n`;*)
+        let lbl = new_label() in
+        ` loop{emit_int lbl}:\n`;
+        ` vsetvli {emit_reg reg_tmp2}, {emit_reg i.arg.(2)}, e64, m8\n`;
+        ` vle.v v0, ({emit_reg i.arg.(0)})\n`; (* v0    *)
+        ` vmseq.vx v8, v0, {emit_reg i.arg.(1)}\n`;  (* compare tagged int *)
+        ` vmfirst.m {emit_reg i.res.(0)}, v1\n`;
+        ` bgez {emit_reg i.res.(0)},  found{emit_int lbl}\n`;
+        ` add {emit_reg reg_tmp}, {emit_reg reg_tmp}, {emit_reg reg_tmp2}\n`;
+        ` sub {emit_reg i.arg.(2)}, {emit_reg i.arg.(2)}, {emit_reg reg_tmp2}\n`;
+        ` slli {emit_reg reg_tmp2}, {emit_reg reg_tmp2}, 3\n`; (* tmp2 - count checked byte *)
+        ` add {emit_reg i.arg.(0)}, {emit_reg i.arg.(0)}, {emit_reg reg_tmp2}\n`;
+        ` bnez {emit_reg i.arg.(2)}, loop{emit_int lbl}\n`;
+        ` j end{emit_int lbl}\n`;
+        ` found{emit_int lbl}:\n`;
+        ` add {emit_reg i.res.(0)}, {emit_reg i.res.(0)}, {emit_reg reg_tmp}\n`;
+        ` slli {emit_reg i.res.(0)}, {emit_reg i.res.(0)}, 1\n`; 
+        ` addi {emit_reg i.res.(0)}, {emit_reg i.res.(0)}, 1\n`;
+   
+   
+        ` end{emit_int lbl}:\n`;
+        ` ld {emit_reg i.arg.(0)}, -8(sp)\n`;
+       (* ` li {emit_reg i.res.(0)}, 5\n`;*)
+       (* ` ret\n`;*)
 
 
   | Lop(Ispecific sop) ->

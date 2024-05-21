@@ -41,6 +41,7 @@ META
 
 # local to root directory
 
+/my_tests
 /.dep
 /Makefile.build_config
 /Makefile.config
